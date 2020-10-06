@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import express, { Express, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { getTransactionHistory } from './controllers/account-controller';
 
 dotenv.config();
