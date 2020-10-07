@@ -1,9 +1,41 @@
 import React from 'react';
-import { Home } from './pages';
-//import { Chart, ChartData, Point } from 'chart.js';
+import { Home, House, Matt } from './pages';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+import { SideMenu } from 'components/shared';
+import { makeStyles } from '@material-ui/core';
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
+    marginLeft: drawerWidth
+  },
+}));
 
 const App = (): JSX.Element => {
-  return <Home />;
+  const classes = useStyles();
+
+  return (
+    <div>
+      <SideMenu drawerWidth={drawerWidth} />
+      <main className={classes.content}>
+        <Router>
+          <Switch>
+            <Route path="/house" component={House} />
+            <Route path="/matt" component={Matt} />
+            <Route path="/" exact component={Home} />
+          </Switch>
+        </Router>
+      </main>
+    </div>
+  );
 }
 
 // function App() {

@@ -1,20 +1,17 @@
 import React from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import HomeIcon from '@material-ui/icons/Home';
+import FlightIcon from '@material-ui/icons/Flight'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCat } from '@fortawesome/free-solid-svg-icons';
 
 // #region Styles
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = (drawerWidth: number) => 
+makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-    },
-    appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
     },
     drawer: {
       width: drawerWidth,
@@ -23,22 +20,47 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerPaper: {
       width: drawerWidth,
     },
-    toolbar: theme.mixins.toolbar,
-    content: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-      padding: theme.spacing(3),
+    sideBarHeader: {
+      backgroundColor: '#41a49d',
+      color: 'white'
     },
-  }),
+    sideMenuHeaderIcon: {
+      color: 'white',
+      minWidth: '52px',
+      marginLeft: '4px'
+    }
+  })
 );
 // #endregion
 
 interface SideMenuProps {
-
+  drawerWidth: number;
 }
 
+interface SideMenuItem {
+  key: string;
+  label: string;
+  icon: JSX.Element;
+  href: string;
+}
+
+const sideMenuItems: SideMenuItem[] = [
+  {
+    key: 'house-savings',
+    label: 'House Savings',
+    icon: <HomeIcon />,
+    href: 'house'
+  },
+  {
+    key: 'matts-finance',
+    label: 'Matt\'s Finance',
+    icon: <FlightIcon />,
+    href: 'matt'
+  }
+];
+
 const SideMenu = (props: SideMenuProps): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles(props.drawerWidth)();
 
   return (
     <div className={classes.root}>
@@ -50,12 +72,19 @@ const SideMenu = (props: SideMenuProps): JSX.Element => {
         }}
         anchor="left"
       >
-        <div className={classes.toolbar} />
+        <List className={classes.sideBarHeader}>
+          <ListItem>
+            <ListItemIcon className={classes.sideMenuHeaderIcon}>
+              <FontAwesomeIcon icon={faCat} />
+            </ListItemIcon>
+            <ListItemText primary="Zoe's Hub"></ListItemText>
+          </ListItem>
+        </List>
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+          {sideMenuItems.map(menuItem => (
+            <ListItem button component="a" href={menuItem.href} key={menuItem.key}>
+              <ListItemIcon>{menuItem.icon}</ListItemIcon>
+              <ListItemText primary={menuItem.label} />
             </ListItem>
           ))}
         </List>
