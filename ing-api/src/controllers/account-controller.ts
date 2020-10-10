@@ -4,8 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 import qs from 'qs';
 import csvParse from 'csv-parse';
-import { Transaction } from "@common/models/transaction";
-import { Money } from '@common/models/money';
+import { Transaction, TransactionDataPoint, Money } from '@common/models';
 
 const dataExportType = 'csv';
 const puppeteerSettings: puppeteer.LaunchOptions = {
@@ -80,4 +79,31 @@ const getMoney = (dollarsAndCents: string): Money => {
     };
 }
 
-export { getTransactionHistory };
+const formatTransactionsToDailyValue = (transactions: Transaction[], startDate: string, endDate: string): TransactionDataPoint[] => {
+    const startDateMoment = moment(startDate);
+    const endDateMoment = moment(endDate);
+    let result: TransactionDataPoint[] = [];
+
+    transactions.sort((a, b) => {
+        return a.date.localeCompare(b.date);
+    });
+
+    const stepSize = endDateMoment.diff(startDateMoment, 'days') > 31 ? 5 : 1;
+
+    for (let date = startDateMoment; date <= endDateMoment; date.add(stepSize, 'day')) {
+        const matchingTransaction = transactions.find(t => moment(t.date, "DD/MM/YYYY") >= date);
+
+        if (!matchingTransaction) {
+            continue;
+        }
+
+        result.push({
+            date: date.toDate(),
+            dollarAmount: matchingTransaction.balance.dollars
+        });
+    }
+
+    return result;
+}
+
+export { getTransactionHistory, formatTransactionsToDailyValue };
