@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node ./build/index.js",
+    "start": "node ./build/src/index.js",
     "dev": "yarn build && yarn start"
   },
   "dependencies": {
